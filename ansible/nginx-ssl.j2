@@ -1,0 +1,31 @@
+server {
+# SSL configuration
+listen 443 ssl;
+listen [::]:443 ssl;
+server_name {{ domain_name }}
+ssl on;
+ssl_certificate /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/{{ domain_name }}/privkey.pem;
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+ssl_prefer_server_ciphers on;
+ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+ssl_dhparam /etc/nginx/ssl/dhparams.pem;
+ssl_session_timeout 30m;
+ssl_session_cache shared:SSL:10m;
+ssl_buffer_size 8k;
+add_header Strict-Transport-Security max-age=31536000;
+    root         /var/www/html;
+
+    # Load configuration files for the default server block.
+    include /etc/nginx/default.d/*.conf;
+
+    location / {
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+    }
